@@ -669,7 +669,7 @@ class ApologyGame {
     this.bgImages = {
       1: 'assets/background_france.png',
       2: 'assets/background_italy.png',
-      3: 'assets/background_cebu.png'
+      3: 'assets/background_natrang.png'
     };
     
     // 스토리 시나리오 리스트 (짜루와 꾸꾸의 한글 대화창)
@@ -679,14 +679,14 @@ class ApologyGame {
       { speaker: '짜루', text: '내가 백 번 천 번 잘못했어... 내 반성의 진심을 증명하고 싶어!', state: 'sad' },
       { speaker: '짜루', text: '자기가 가장 좋아하는 세상에서 제일 달콤한 "궁극의 황금 망고"를 내 손으로 직접 찾아올게! 🥭✨', state: 'idle' },
       { speaker: '꾸꾸', text: '어...? 진짜...? 엄청 구하기 어려운 거잖아. 프랑스, 이탈리아 신혼여행지에서도 망고 찾기 힘들 텐데?', state: 'idle' },
-      { speaker: '짜루', text: '걱정 마! 추억이 담긴 파리 거리와 토스카나 벌판을 지나 머나먼 세부 청정 바다 끝까지 다 뒤져서라도 꼭 가져올게. 기다려줘! ✈️', state: 'happy' },
+      { speaker: '짜루', text: '걱정 마! 추억이 담긴 파리 거리와 토스카나 벌판을 지나 이번 여름 우리 단둘이 행복하게 떠나기로 한 베트남 나트랑 에메랄드빛 바다 깊은 곳까지 다 뒤져서라도 꼭 가져올게. 기다려줘! ✈️', state: 'happy' },
       { speaker: '꾸꾸', text: '치... 길 잃어버리지 말고 얼른 다녀와... 조심하구... 🥺', state: 'sad' }
     ];
 
     this.epilogueScript = [
       { speaker: '짜루', text: '꾸꾸야! 나 돌아왔어! 약속을 지키려고 전 세계를 모험해 왔어! 🏃‍♂️💨', state: 'happy' },
       { speaker: '꾸꾸', text: '어? 짜루야! 진짜 안 다치고 잘 다녀왔구나! 빈손은 아니겠지...?', state: 'idle' },
-      { speaker: '짜루', text: '짜잔! 세부 바닷속 가장 신비로운 곳에서 수확한 한 알의 "궁극의 황금 망고"야! 🥭💎✨', state: 'happy' },
+      { speaker: '짜루', text: '짜잔! 베트남 나트랑 에메랄드 해변 깊은 물속에서 수확한 한 알의 "궁극의 황금 망고"야! 🥭💎✨', state: 'happy' },
       { speaker: '꾸꾸', text: '우와아...! 눈부셔! 정말 향기롭고 잘 익은 망고야! 날 위해 진짜로 찾아오다니... 감동이야... 🥹', state: 'happy' },
       { speaker: '짜루', text: '꾸꾸야, 그동안 내 부족함으로 아프게 했던 슬픔들을, 이 달콤한 망고와 내 사랑으로 모두 행복으로 가득 채워줄게. 🧡', state: 'happy' },
       { speaker: '꾸꾸', text: '냠냠... 진짜 역대급으로 달다! 헤헤, 짜루야 나 화 다 풀렸어! 우리 이제 사이좋게 지내자! 사랑해! 🥰❤️', state: 'happy' },
@@ -989,7 +989,7 @@ class ApologyGame {
     const targetNode = document.getElementById(
       this.currentStage === 1 ? 'node-france' :
       this.currentStage === 2 ? 'node-italy' :
-      this.currentStage === 3 ? 'node-cebu' : 'node-ending'
+      this.currentStage === 3 ? 'node-natrang' : 'node-ending'
     );
     
     if (targetNode && mapContainer) {
@@ -1006,7 +1006,7 @@ class ApologyGame {
     } else if (this.currentStage === 2) {
       btnPlay.innerText = '이탈리아 토스카나로 출발! 🍇';
     } else if (this.currentStage === 3) {
-      btnPlay.innerText = '필리핀 세부 바다로 출발! 🏝️';
+      btnPlay.innerText = '베트남 나트랑 바다로 출발! 🏝️';
     } else if (this.currentStage === 4) {
       btnPlay.innerText = '망고 들고 꾸꾸에게 돌아가기 🥭';
     }
@@ -1052,7 +1052,7 @@ class ApologyGame {
       document.getElementById('controls-diver').classList.add('hidden');
     } else if (this.currentStage === 3) {
       hudItemName.innerText = '🔑 황금 열쇠';
-      document.getElementById('game-stage-title').innerText = '3. 필리핀 세부';
+      document.getElementById('game-stage-title').innerText = '3. 베트남 나트랑';
       document.getElementById('controls-catcher').classList.add('hidden');
       document.getElementById('controls-jumper').classList.add('hidden');
       document.getElementById('controls-diver').classList.remove('hidden');
@@ -1521,7 +1521,19 @@ class ApologyGame {
   // 13. 게임 실패 및 성공 트리거
   triggerGameOver() {
     this.isGameOver = true;
-    this.canvas.addEventListener('click', () => this.restartCurrentStage(), { once: true });
+    audio.playHurt();
+    
+    // 모바일 터치와 클릭 모두 동작하도록 게임플레이 전체 화면에 바인딩
+    const gameplayScreen = document.getElementById('screen-gameplay');
+    const onGameOverAction = (e) => {
+      e.preventDefault();
+      gameplayScreen.removeEventListener('click', onGameOverAction);
+      gameplayScreen.removeEventListener('touchstart', onGameOverAction);
+      this.restartCurrentStage();
+    };
+    
+    gameplayScreen.addEventListener('click', onGameOverAction);
+    gameplayScreen.addEventListener('touchstart', onGameOverAction, {passive: false});
   }
 
   restartCurrentStage() {
@@ -1532,11 +1544,18 @@ class ApologyGame {
     this.isStageClear = true;
     audio.playSuccess();
     
-    // 스테이지가 끝나면 캔버스 클릭 시 월드맵 노드로 복귀
-    this.canvas.addEventListener('click', () => {
+    // 모바일 터치와 클릭 모두 동작하도록 게임플레이 전체 화면에 바인딩
+    const gameplayScreen = document.getElementById('screen-gameplay');
+    const onStageClearAction = (e) => {
+      e.preventDefault();
+      gameplayScreen.removeEventListener('click', onStageClearAction);
+      gameplayScreen.removeEventListener('touchstart', onStageClearAction);
       this.currentStage++;
       this.changeScene('MAP');
-    }, { once: true });
+    };
+    
+    gameplayScreen.addEventListener('click', onStageClearAction);
+    gameplayScreen.addEventListener('touchstart', onStageClearAction, {passive: false});
   }
 
   // 14. 메인 화면 미리보기 드로잉 (정적 상태 짜루와 꾸꾸 애니메이션 연동)
