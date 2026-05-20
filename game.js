@@ -1024,7 +1024,7 @@ class ApologyGame {
 
   setupGameplayView() {
     this.score = 0;
-    this.lives = 3;
+    this.lives = 5; // 아내분이 편안하게 클리어할 수 있도록 라이프를 5개로 증량!
     this.isGameOver = false;
     this.isStageClear = false;
     this.items = [];
@@ -1033,6 +1033,15 @@ class ApologyGame {
     this.backgroundX = 0;
     this.distanceTraveled = 0;
     this.stageKeysCollected = 0;
+
+    // 누구든 10초면 클리어할 수 있도록 목표 획득량 대폭 경감
+    if (this.currentStage === 1) {
+      this.targetScore = 5;
+    } else if (this.currentStage === 2) {
+      this.targetScore = 5;
+    } else if (this.currentStage === 3) {
+      this.targetScore = 2; // 열쇠 2개만 획득해도 클리어!
+    }
 
     this.initPlayerPosition();
 
@@ -1067,13 +1076,14 @@ class ApologyGame {
 
   updateHUD() {
     if (this.currentStage === 3) {
-      document.getElementById('hud-score').innerText = `${this.stageKeysCollected} / 3`;
+      document.getElementById('hud-score').innerText = `${this.stageKeysCollected} / 2`; // UI상에 목표 2개로 표시
     } else {
       document.getElementById('hud-score').innerText = `${this.score} / ${this.targetScore}`;
     }
     
     let lifeStr = '';
-    for (let i = 0; i < 3; i++) {
+    const maxLives = 5;
+    for (let i = 0; i < maxLives; i++) {
       lifeStr += i < this.lives ? '❤️' : '🖤';
     }
     document.getElementById('hud-life').innerText = lifeStr;
@@ -1188,8 +1198,8 @@ class ApologyGame {
         this.player.vy = 0;
       }
 
-      // 우측에서 토스카나 포도별 생성
-      if (this.frame % 48 === 0) {
+      // 우측에서 토스카나 포도별 생성 (빈도를 높여 빠른 수집 지원!)
+      if (this.frame % 28 === 0) {
         this.items.push({
           x: this.canvas.width + 30,
           y: Math.random() * (this.canvas.height * 0.4) + this.canvas.height * 0.18,
@@ -1198,13 +1208,13 @@ class ApologyGame {
         });
       }
 
-      // 방해물 비구름 생성
-      if (this.frame % 90 === 0) {
+      // 방해물 비구름 생성 (빈도 격감, 크기 극소화, 속도 극저화하여 난이도 급강하!)
+      if (this.frame % 220 === 0) {
         this.obstacles.push({
           x: this.canvas.width + 50,
           y: Math.random() * (this.canvas.height * 0.42) + this.canvas.height * 0.18,
-          size: Math.random() * 15 + 45,
-          speed: Math.random() * 1 + 2.5
+          size: Math.random() * 5 + 20,
+          speed: Math.random() * 0.4 + 1.0
         });
       }
 
@@ -1277,9 +1287,9 @@ class ApologyGame {
         this.player.vy = 0;
       }
 
-      // 조개 아이템 및 특별 황금 망고 열쇠 배치
-      if (this.frame % 60 === 0) {
-        const isKey = this.stageKeysCollected < 3 && Math.random() > 0.68;
+      // 조개 아이템 및 특별 황금 망고 열쇠 배치 (출현 빈도 대폭 증가!)
+      if (this.frame % 35 === 0) {
+        const isKey = this.stageKeysCollected < 2 && Math.random() > 0.35;
         this.items.push({
           x: this.canvas.width + 30,
           y: Math.random() * (this.canvas.height * 0.55) + this.canvas.height * 0.2,
@@ -1288,13 +1298,13 @@ class ApologyGame {
         });
       }
 
-      // 장애물 성게(Sea Urchins) 생성
-      if (this.frame % 110 === 0) {
+      // 장애물 성게(Sea Urchins) 생성 (출현 빈도 대폭 격감, 속도 및 크기 급격화!)
+      if (this.frame % 250 === 0) {
         this.obstacles.push({
           x: this.canvas.width + 40,
           y: Math.random() * (this.canvas.height * 0.52) + this.canvas.height * 0.22,
-          size: 32,
-          speed: 2.2
+          size: 16,
+          speed: 0.9
         });
       }
 
@@ -1315,7 +1325,7 @@ class ApologyGame {
           }
           this.updateHUD();
 
-          if (this.stageKeysCollected >= 3) {
+          if (this.stageKeysCollected >= 2) {
             this.triggerStageClear();
           }
           continue;
