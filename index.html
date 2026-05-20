@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>짜루의 달콤한 망고 모험 - 꾸꾸에게 보내는 사과 편지</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- 구글 폰트 적용 (감성적이고 귀여운 폰트 및 모던한 영문 폰트) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Outfit:wght@400;600;800&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- 모바일 및 데스크톱 정렬을 위한 전체 래퍼 -->
+  <div id="app-wrapper">
+    <div id="game-container">
+      
+      <!-- 1. 인트로 화면 (Intro Screen) -->
+      <div id="screen-intro" class="screen active">
+        <div class="background-overlay" style="background-image: url('assets/background_intro.png');"></div>
+        <div class="gradient-overlay"></div>
+        <div class="intro-content">
+          <div class="logo-area">
+            <span class="sub-title">꾸꾸를 위한 남편 짜루의 마음</span>
+            <h1 class="main-title">짜루의 달콤한<br><span class="highlight">망고 모험</span></h1>
+          </div>
+          
+          <div class="intro-character-box">
+            <!-- SVG로 구현된 쪼끄맣고 귀여운 캐릭터들 애니메이션 연출 예정 -->
+            <div class="character-preview-wrapper">
+              <div class="preview-char" id="preview-jjaru"></div>
+              <div class="preview-heart">❤️</div>
+              <div class="preview-char" id="preview-kkukku"></div>
+            </div>
+          </div>
+          
+          <div class="start-btn-group">
+            <button id="btn-start-game" class="btn btn-primary pulse">
+              <span class="btn-text">모험 시작하기</span>
+              <span class="btn-sub-text">BGM이 재생됩니다 🎵</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 2. 프롤로그/에필로그 대화창 화면 (Story Screen) -->
+      <div id="screen-story" class="screen">
+        <div class="story-bg" id="story-bg-layer"></div>
+        <div class="gradient-overlay"></div>
+        
+        <!-- 현재 단계 표시기 -->
+        <div class="stage-badge" id="story-stage-badge">프롤로그</div>
+        
+        <div class="story-container">
+          <!-- 캐릭터 초상화 영역 (상호작용에 따라 표정 변화) -->
+          <div class="story-characters">
+            <div class="story-char-box left" id="story-char-jjaru">
+              <div class="char-sprite jjaru-sprite"></div>
+              <span class="char-name">짜루 🐵</span>
+            </div>
+            <div class="story-char-box right" id="story-char-kkukku">
+              <div class="char-sprite kkukku-sprite"></div>
+              <span class="char-name">꾸꾸 🐹</span>
+            </div>
+          </div>
+          
+          <!-- 유리 모티프(Glassmorphism) 대화 상자 -->
+          <div class="dialogue-box">
+            <div class="speaker-name" id="dialogue-speaker">짜루</div>
+            <div class="dialogue-text-wrapper">
+              <p id="dialogue-text">꾸꾸야... 내가 정말 잘못했어... 진심으로 미안해...</p>
+            </div>
+            <div class="dialogue-footer">
+              <span class="tap-guide">화면을 터치해 주세요 👇</span>
+              <button id="btn-story-next" class="btn-next-arrow">▶</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 3. 월드맵 로드 화면 (World Map Screen) -->
+      <div id="screen-map" class="screen">
+        <div class="map-bg"></div>
+        <div class="map-container">
+          <div class="map-header">
+            <h2>망고를 찾아서 떠나는 여행 🗺️</h2>
+            <p>우리의 소중한 추억들을 지나 망고 섬으로!</p>
+          </div>
+          
+          <!-- 여행 패스 노드선 -->
+          <div class="map-route-container">
+            <div class="map-line"></div>
+            
+            <!-- 프랑스 파리 노드 -->
+            <div class="map-node active" id="node-france" data-stage="1">
+              <div class="node-icon">🥖</div>
+              <div class="node-label">1. 프랑스 파리</div>
+            </div>
+            
+            <!-- 이탈리아 토스카나 노드 -->
+            <div class="map-node" id="node-italy" data-stage="2">
+              <div class="node-icon">🍇</div>
+              <div class="node-label">2. 이탈리아 토스카나</div>
+            </div>
+            
+            <!-- 세부 노드 -->
+            <div class="map-node" id="node-cebu" data-stage="3">
+              <div class="node-icon">🏝️</div>
+              <div class="node-label">3. 필리핀 세부</div>
+            </div>
+            
+            <!-- 최종 망고 섬 노드 -->
+            <div class="map-node" id="node-ending" data-stage="4">
+              <div class="node-icon">🥭</div>
+              <div class="node-label">최종 목적지</div>
+            </div>
+            
+            <!-- 미니 짜루 아이콘 (루트를 따라 이동) -->
+            <div class="map-player" id="map-jjaru-player">🐵</div>
+          </div>
+          
+          <div class="map-footer">
+            <button id="btn-start-stage" class="btn btn-secondary">
+              프랑스 파리로 출발! ✈️
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 4. 게임 플레이 화면 (Gameplay Screen) -->
+      <div id="screen-gameplay" class="screen">
+        <!-- 상단 HUD 정보 -->
+        <div class="game-hud">
+          <div class="hud-item score-box">
+            <span class="hud-label" id="hud-item-name">🥖 수집한 빵</span>
+            <span class="hud-value" id="hud-score">0 / 10</span>
+          </div>
+          <div class="hud-item stage-title-box">
+            <span id="game-stage-title">프랑스 파리</span>
+          </div>
+          <div class="hud-item life-box">
+            <span class="hud-label">❤️ 하트</span>
+            <span class="hud-value" id="hud-life">❤️❤️❤️</span>
+          </div>
+        </div>
+        
+        <!-- 미니게임 캔버스 -->
+        <canvas id="game-canvas"></canvas>
+        
+        <!-- 모바일 터치 전용 가상 컨트롤러 -->
+        <div class="virtual-controls" id="controls-catcher">
+          <button class="ctrl-btn" id="btn-left">◀</button>
+          <div class="ctrl-tip">화면 좌우를 터치하여 움직여요!</div>
+          <button class="ctrl-btn" id="btn-right">▶</button>
+        </div>
+        
+        <div class="virtual-controls hidden" id="controls-jumper">
+          <div class="ctrl-tip-fullscreen">화면을 터치하면 둥실 날아올라요! ☁️</div>
+        </div>
+
+        <div class="virtual-controls hidden" id="controls-diver">
+          <div class="ctrl-tip-fullscreen">터치하고 있으면 잠수하고, 때면 물 위로 떠올라요! 🌊</div>
+        </div>
+      </div>
+      
+      <!-- 5. 엔딩 손편지 화면 (Letter Screen) -->
+      <div id="screen-letter" class="screen">
+        <div class="background-overlay" style="background-image: url('assets/background_ending.png');"></div>
+        <div class="gradient-overlay letter-overlay"></div>
+        
+        <div class="letter-scroll-wrapper">
+          <div class="letter-paper">
+            <div class="letter-header">
+              <span class="letter-date">2026년 5월, 사랑을 담아 💌</span>
+              <h2>사랑하는 애구에게</h2>
+            </div>
+            
+            <div class="letter-body">
+              <p class="letter-para animate-fade">제가 많이 부족해서 공감도 하지못해</p>
+              <p class="letter-para animate-fade">자기에게 많은 슬픔을 주었어요.</p>
+              <p class="letter-para animate-fade">슬픔을 행복으로 가득 채울 수 있도록</p>
+              <p class="letter-para animate-fade">제가 많이 노력할게요.</p>
+              <br>
+              <p class="letter-para highlight-text animate-fade">항상 사랑해요 ❤️</p>
+            </div>
+            
+            <div class="letter-footer">
+              <span class="sender-name">꾸꾸를 평생 지켜줄 짜루 올림 🐵</span>
+              
+              <button id="btn-restart" class="btn btn-outline">
+                처음부터 다시 하기 🔄
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 상단 글로벌 사운드 컨트롤 버튼 -->
+      <button id="btn-sound-toggle" class="sound-toggle-btn mute">
+        <span class="sound-icon">🔇</span>
+      </button>
+      
+    </div>
+  </div>
+  
+  <!-- 핵심 게임 로직 스크립트 로드 -->
+  <script src="game.js" defer></script>
+</body>
+</html>
